@@ -7,6 +7,7 @@ import db from './firebase';
 function App() {
   
   const [tareas, setTareas] = useState([])
+  const [nuevaTarea, setNuevaTarea] = useState("")
   
   useEffect(() => {
       const obtenerDatos = async ()=>{
@@ -19,6 +20,17 @@ function App() {
       }
       obtenerDatos();
   }, []);
+
+  const agregar = async(e)=>{
+    e.preventDefault()
+    
+    if(!nuevaTarea.trim()){
+      console.log('Esta vacio')
+      return
+    }
+    
+    console.log(nuevaTarea)
+  }
   
   return (
     <div className="container mt-3">
@@ -36,7 +48,22 @@ function App() {
           </ul>
         </div>
         <div className="col-md-6">
-          formulario
+          <h3>Formulario</h3>
+          <form onSubmit={agregar}>
+            <input 
+                type="text" 
+                placeholder="Ingresar tarea"
+                className="form-control mb-2"
+                onChange={e => setNuevaTarea(e.target.value)}
+                value={nuevaTarea}
+            />
+            <button
+              className="btn btn-dark btn-block"
+              type="submit"
+            >
+              Agregar
+            </button>
+          </form>
         </div>
       </div>
     </div>
