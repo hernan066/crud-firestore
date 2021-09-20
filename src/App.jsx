@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 import db from './firebase';
 
 function App() {
@@ -27,6 +27,23 @@ function App() {
     if(!nuevaTarea.trim()){
       console.log('Esta vacio')
       return
+    }
+    
+    try {
+      const guardarTarea = await addDoc(collection(db, "tareas"), {
+        name: nuevaTarea,
+        fecha: Date.now()
+      });
+      
+      setTareas([
+        ...tareas,
+        {...guardarTarea, id: guardarTarea.id}
+      ])
+      
+      setNuevaTarea('');
+
+    } catch (error) {
+      console.log(error)
     }
     
     console.log(nuevaTarea)
