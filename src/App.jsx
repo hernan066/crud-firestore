@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-import { collection, getDocs, addDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import db from './firebase';
 
 function App() {
@@ -73,6 +73,31 @@ function App() {
   }
   const editar = async (e)=>{
     e.preventDefault();
+    if(!nuevaTarea.trim()){
+      console.log('vacio')
+      return
+    }
+    try {
+      /* await db.collection('tareas').doc(id).update({
+        name: nuevaTarea
+      }) */
+
+      const edit = doc(db, 'tareas', id);
+      await updateDoc(edit, {
+        name: nuevaTarea
+      })
+
+      const arrayEditado = tareas.map(item =>(
+        item.id === id ? {id: item.id, fecha:item.fecha, name: nuevaTarea } : item
+      ));
+      setTareas(arrayEditado);
+      setModoEdicion(false);
+      setNuevaTarea('');
+      setId('');
+
+    } catch (error) {
+      console.log(error)
+    }
   }
   
   return (
