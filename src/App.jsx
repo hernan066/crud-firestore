@@ -6,26 +6,28 @@ import db from './firebase';
 
 function App() {
   
-  const [tareas, setTareas] = useState([])
-  const [nuevaTarea, setNuevaTarea] = useState("")
+  const [tareas, setTareas] = useState([]);
+  const [nuevaTarea, setNuevaTarea] = useState("");
+  const [id, setId] = useState("");
+  const [modoEdicion, setModoEdicion] = useState(false);
   
   useEffect(() => {
       const obtenerDatos = async ()=>{
           const datos = await getDocs(collection(db, 'tareas'));
           datos.forEach((documento)=>{
             const arrayData = datos.docs.map(doc => ({id: doc.id, ...doc.data()}))
-            console.log(arrayData)
-            setTareas(arrayData)
+            console.log(arrayData);
+            setTareas(arrayData);
           })
       }
       obtenerDatos();
   }, []);
 
   const agregar = async(e)=>{
-    e.preventDefault()
+    e.preventDefault();
     
     if(!nuevaTarea.trim()){
-      console.log('Esta vacio')
+      console.log('Esta vacio');
       return
     }
     
@@ -62,6 +64,16 @@ function App() {
       
     }
   }
+
+  const activarEdicion = (item)=>{
+    setModoEdicion(true);
+    setNuevaTarea(item.name);
+    setId(item.id);
+
+  }
+  const editar = async (e)=>{
+    e.preventDefault();
+  }
   
   return (
     <div className="container mt-3">
@@ -79,7 +91,11 @@ function App() {
                         onClick={()=> eliminar(item.id)}
                     >Eliminar
                     </button>
-                    <button className="btn btn-danger btn-sm float-end mx-3">Editar</button>
+                    <button 
+                        className="btn btn-warning btn-sm float-end mx-3"
+                        onClick={()=> activarEdicion(item)}
+                    >Editar
+                    </button>
                 </li>
               ))
             }
@@ -87,8 +103,12 @@ function App() {
           </ul>
         </div>
         <div className="col-md-6">
-          <h3>Formulario</h3>
-          <form onSubmit={agregar}>
+          <h3>
+              {
+                modoEdicion ? 'Editar tarea' : 'Agregar tarea'
+              }
+          </h3>
+          <form onSubmit={modoEdicion ? editar : agregar}>
             <input 
                 type="text" 
                 placeholder="Ingresar tarea"
@@ -97,10 +117,12 @@ function App() {
                 value={nuevaTarea}
             />
             <button
-              className="btn btn-dark btn-block"
+              className={ modoEdicion ? "btn btn-warning btn-block" : "btn btn-dark btn-block"}
               type="submit"
             >
-              Agregar
+              {
+                modoEdicion ? 'Editar' : 'Agregar'
+              }
             </button>
           </form>
         </div>
