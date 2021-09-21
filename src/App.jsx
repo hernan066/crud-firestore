@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
-
 import { collection, getDocs, addDoc, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import db from './firebase';
 
@@ -102,6 +100,8 @@ function App() {
   
   return (
     <div className="container mt-3">
+      <h1>CRUD</h1>
+      <hr />
       <div className="row">
         <div className="col-md-6">
         <h3>Lista de tareas</h3>
